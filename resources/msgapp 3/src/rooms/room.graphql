@@ -1,0 +1,19 @@
+type Message {
+    from: Int!
+    content: String!
+}
+
+type Room {
+    id: Int!
+    users: [User]
+    messages: [Message]
+}
+
+input SendMessageInput {
+    message: String!
+    roomId: Int!
+}
+
+type Mutation {
+    sendMsg(input: SendMessageInput!): Room
+}
