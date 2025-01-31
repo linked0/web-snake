@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/contractconnect.tsx","./src/components/coursegoal.tsx","./src/components/coursegoallist.tsx","./src/components/header.tsx","./src/components/newgoal.tsx"],"errors":true,"version":"5.6.2"}

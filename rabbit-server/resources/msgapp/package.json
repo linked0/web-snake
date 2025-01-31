@@ -1,0 +1,27 @@
+{
+  "name": "msgapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate": "graphql-codegen --config codegen.yaml",
+    "compile": "tsc",
+    "start": "npm run compile && node --watch ./dist/src/main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.14",
+    "@types/graphql": "^14.5.0",
+    "@types/node": "^18.11.5",
+    "apollo-server-express": "^3.10.3",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^2.13.7",
+    "@graphql-codegen/typescript": "^2.8.0",
+    "@graphql-codegen/typescript-resolvers": "^2.7.5"
+  }
+}

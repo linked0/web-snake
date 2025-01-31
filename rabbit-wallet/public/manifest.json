@@ -1,0 +1,13 @@
+{
+  "name": "Rabbit Wallet",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "Poohnet Rabbit Wallet",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Open Wallet"
+  },
+  "permissions": [
+    "storage"
+  ]
+}

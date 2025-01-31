@@ -1,0 +1,1 @@
+export const ALL_BASIC_CONTRACT_NAME = "AllBasic";

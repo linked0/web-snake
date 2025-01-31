@@ -1,0 +1,117 @@
+body {
+  width: 400px;  /* Set desired width */
+  height: 600px; /* Set desired height */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #ff0000; /* fallback for old browsers, #1f1b34 */
+  background: -webkit-linear-gradient(
+    to right,
+    #0f0e19,
+    #ff0000
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #0f0e19,
+    #ff0000
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.text-color-green {
+  color: #a16bb3;
+}
+.text-color-gray-tone {
+  color: #7a7a7a;
+}
+.bg-color-lime {
+  background-color: #a16bb3;
+}
+.text-color-white {
+  color: #fff;
+}
+
+.button-gradient {
+  background-image: linear-gradient(309deg, #420be6, #a16bb3);
+  box-shadow: 0 10px 30px 0 rgb(111 57 205 / 30%);
+}
+.border-purplx-900 {
+  border: solid 1px #a16bb3;
+}
+@font-face {
+  font-family: "Gilroy";
+  src: local("Gilroy"), url(./assets/fonts/Gilroy-Light.otf) format("truetype");
+}
+@font-face {
+  font-family: "GilroyBold";
+  src: local("GilroyBold"),
+    url(./assets/fonts/Gilroy-ExtraBold.otf) format("truetype");
+}
+@font-face {
+  font-family: "DMSansBold";
+  src: local("DMSansBold"),
+    url(./assets/fonts/DMSans-Bold.ttf) format("truetype");
+}
+@font-face {
+  font-family: "DMSansRegular";
+  src: local("DMSansRegular"),
+    url(./assets/fonts/DMSans-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "DMSansItalic";
+  src: local("DMSansItalic"),
+    url(./assets/fonts/DMSans-Italic.ttf) format("truetype");
+}
+@font-face {
+  font-family: "ArchivoRegular";
+  src: local("ArchivoRegular"),
+    url(./assets/fonts/Archivo-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "ArchivoBold";
+  src: local("ArchivoBold"),
+    url(./assets/fonts/Archivo-Bold.ttf) format("truetype");
+}
+@font-face {
+  font-family: "ArchivoExtraBold";
+  src: local("ArchivoExtraBold"),
+    url(./assets/fonts/Archivo-ExtraBold.ttf) format("truetype");
+}
+@font-face {
+  font-family: "ArchivoBlack";
+  src: local("ArchivoBlack"),
+    url(./assets/fonts/Archivo-Black.ttf) format("truetype");
+}
+.ArchivoBold {
+  font-family: ArchivoBold !important;
+}
+
+.ArchivoBlack {
+  font-family: ArchivoBlack !important;
+}
+
+.ArchivoExtraBold {
+  font-family: ArchivoExtraBold !important;
+}
+
+.ArchivoRegular {
+  font-family: ArchivoRegular !important;
+}
+
+.DMSansRegular {
+  font-family: DMSansRegular !important;
+}
+
+.DMSansBold {
+  font-family: DMSansBold !important;
+}
+
+.DMSansItalic {
+  font-family: DMSansItalic !important;
+}
