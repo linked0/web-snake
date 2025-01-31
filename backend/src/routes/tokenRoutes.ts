@@ -1,40 +1,18 @@
 import { Router, Request, Response, NextFunction } from "express";
-import Web3 from "web3";
 import { RPC_URL, CONTRACT_ADDRESS } from "../config";
 import { getDB } from "../db";
-import { AbiItem } from "web3-utils";
+import { Contract, JsonRpcProvider, isAddress } from "ethers";
+import MyToken from "../abis/MyToken.json";
 
 const tokenRouter = Router();
 
-// 간단한 ABI
-const contractABI: AbiItem[] = [
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, name: "to", type: "address" },
-      { indexed: false, name: "amount", type: "uint256" },
-    ],
-    name: "Mint",
-    type: "event",
-  },
-  {
-    inputs: [{ name: "_user", type: "address" }],
-    name: "mint",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [{ name: "account", type: "address" }],
-    name: "balanceOf",
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-];
+const provider = new JsonRpcProvider(RPC_URL);
 
-const web3 = new Web3(new Web3.providers.HttpProvider(RPC_URL as string));
-const contract = new web3.eth.Contract(contractABI, CONTRACT_ADDRESS);
+if (!CONTRACT_ADDRESS) {
+  throw new Error("Missing CONTRACT_ADDRESS!");
+}
+
+const contract = new Contract(CONTRACT_ADDRESS, MyToken.abi, provider);
 
 /**
  * POST /mint
@@ -47,7 +25,7 @@ tokenRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const address = req.query.address as string;
-      if (!address || !web3.utils.isAddress(address)) {
+      if (!address || !isAddress(address)) {
         return res.status(400).json({ error: "Invalid address parameter" });
       }
 
@@ -100,12 +78,12 @@ tokenRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const address = req.query.address as string;
-      if (!address || !web3.utils.isAddress(address)) {
+      if (!address || !isAddress(address)) {
         return res.status(400).json({ error: "Invalid address parameter" });
       }
-      const balance = await contract.methods.balanceOf(address).call();
+      const balance = await contract.balanceOf(address);
       // 필요한 경우 balance를 1e18로 나누어 표시해도 되지만, 여기서는 raw 값 그대로
-      return res.json({ balance });
+      return res.json({ balance: balance.toString() });
     } catch (error) {
       return next(error);
     }
@@ -121,7 +99,7 @@ tokenRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const address = req.query.address as string;
-      if (!address || !web3.utils.isAddress(address)) {
+      if (!address || !isAddress(address)) {
         return res.status(400).json({ error: "Invalid address parameter" });
       }
 

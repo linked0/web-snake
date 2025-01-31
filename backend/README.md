@@ -27,3 +27,18 @@ DATABASE_FILE=./database.sqlite
 WEB3_PROVIDER_URL=https://holesky.infura.io/v3/YOUR_INFURA_PROJECT_ID
 PRIVATE_KEY=YOUR_PRIVATE_KEY
 CONTRACT_ADDRESS=0xd16d41635C7ECe3c13B2c7Eae094a92aDF41bB2a
+```
+
+## Setup and Start
+### Install
+```
+yarn
+```
+### Compile
+```
+yarn dev
+```
+### Start
+```
+yarn start
+```

@@ -1,15 +1,16 @@
-import Web3 from 'web3';
 import { getDB } from './db';
 import { RPC_URL, PRIVATE_KEY, CONTRACT_ADDRESS } from './config';
-import { AbiItem } from 'web3-utils';
-import MyToken from './abis/MyToken.json';
+import ethers from 'ethers';
+import { JsonRpcProvider, Contract } from "ethers";
+import MyToken from "./abis/MyToken.json";
 
-const filteredAbi = MyToken.abi.filter(
-  (item: any) => item.type === 'function' || item.type === 'event'
-) as AbiItem[];
+const provider = new JsonRpcProvider(RPC_URL);
 
-const web3 = new Web3(new Web3.providers.HttpProvider(RPC_URL as string));
-const contract = new web3.eth.Contract(filteredAbi, CONTRACT_ADDRESS);
+if (!CONTRACT_ADDRESS) {
+  throw new Error("Missing CONTRACT_ADDRESS!");
+}
+
+const contract = new Contract(CONTRACT_ADDRESS, MyToken.abi, provider);
 
 export async function processPendingRequests() {
   try {
@@ -26,41 +27,65 @@ export async function processPendingRequests() {
     if (!pending || pending.length === 0) return;
 
     // 민팅에 사용할 계정(Web3에 key 추가)
-    const signer = web3.eth.accounts.wallet.add(PRIVATE_KEY as string);
+    const signer = new ethers.Wallet(PRIVATE_KEY as string);
     const fromAddress = signer.address;
 
     // nonce
-    let currentNonce = await web3.eth.getTransactionCount(fromAddress, 'pending');
+    let currentNonce = await provider.getTransactionCount(fromAddress, "pending");
 
     // 여러 건을 병렬 처리 (nonce 충돌 주의. 여기서는 간단히 하나씩 +1)
     const promiseList = pending.map(async (item, idx) => {
       const userAddr = item.userAddress;
       const nonce = currentNonce + idx;
 
-      // 트랜잭션 데이터 구성
-      const txData = contract.methods.mint(userAddr).encodeABI();
-      const gasPrice = await web3.eth.getGasPrice();
-      const gasLimit = await contract.methods.mint(userAddr).estimateGas({ from: fromAddress });
+      // 3) Prepare tx data
+      //    (a) encode mint function call
+      const txData = contract.interface.encodeFunctionData("mint", [userAddr]);
 
+      //    (b) fetch gas price
+      const feeData = await provider.getFeeData();
+
+      // In Ethers v6, feeData.gasPrice can be a bigint or null
+      if (!feeData.gasPrice) {
+        throw new Error("No gasPrice returned by getFeeData(). Possibly an EIP-1559 network?");
+      }
+
+      //    (c) estimate gas for the mint call
+      const gasLimit = await contract.mint.estimateGas(userAddr);
+
+      // 4) Create raw transaction object
+      //    Notice Ethers typically uses `gasLimit` instead of `gas`
       const rawTx = {
         from: fromAddress,
         to: CONTRACT_ADDRESS,
         data: txData,
-        gas: gasLimit,
-        gasPrice,
-        nonce
+        gasLimit,
+        gasPrice: feeData.gasPrice,
+        nonce,
+        // Optionally specify chainId, value, etc., if needed
+        // chainId: 1,
+        // value: 0,
       };
 
-      // 서명 후 전송
-      const signedTx = await web3.eth.accounts.signTransaction(rawTx, PRIVATE_KEY as string);
-      const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction as string);
+      // 5) Send the transaction (if you want to actually execute it)
+      //    Or sign it first, depending on your needs.
+      //    a) Direct send
+      const txResponse = await signer.sendTransaction(rawTx);
+
+      //    b) Wait for it to be mined (optional)
+      const txReceipt = await txResponse.wait();
+      if (txReceipt) {
+        console.log(`Mint tx mined in block ${txReceipt.blockNumber}`);
+      } else {
+        console.error('Transaction receipt is null');
+      }
 
       // DB에 결과 반영
       await db.run(
         `UPDATE mint_requests
          SET txHash = ?, status = 'SUCCESS'
          WHERE id = ?`,
-        [receipt.transactionHash, item.id]
+        [txResponse.hash, item.id]
       );
     });
 
