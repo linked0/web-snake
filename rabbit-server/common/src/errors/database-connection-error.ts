@@ -1,7 +1,7 @@
 import { CustomError } from "./custom-error";
 
 export class DatabaseConnectionError extends CustomError {
-  statusCode = 500;
+  status = 500;
 
   constructor() {
     super("db connection error");

@@ -98,11 +98,11 @@ export default class Application {
       DI.em = DI.orm.em;
       DI.actorRepository = DI.em.getRepository(Actor);
 
-      // const migrator = this.orm.getMigrator();
-      // const migrations = await migrator.getPendingMigrations();
-      // if (migrations && migrations.length > 0) {
-      //   await migrator.up();
-      // }
+      const migrator = this.orm.getMigrator();
+      const migrations = await migrator.getPendingMigrations();
+      if (migrations && migrations.length > 0) {
+        await migrator.up();
+      }
     } catch (error) {
       console.error("📌 Could not connect to the database", error);
       throw Error(String(error));

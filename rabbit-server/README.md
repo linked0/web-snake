@@ -5,6 +5,24 @@
 yarn
 ```
 
+#### Postgres
+Install
+```
+brew install postgresql
+brew services start postgresql
+```
+Create user with password
+```
+psql postgres
+CREATE USER rabbit_app WITH PASSWORD 'your_password!';
+```
+
+Add CREATEDB privilige to postgres user.
+```
+psql -h localhost -U jay -d postgres
+ALTER ROLE rabbit_app WITH CREATEDB;
+```
+
 ## Run dev server
 ```
 cp .env.sample .env
@@ -14,6 +32,45 @@ cp .env.sample .env
 yarn start:dev
 ```
 
+## Test with curl
+#### signup
+```
+curl -i -X POST http://localhost:8000/signup \
+  -H "Content-Type: application/json" \
+  -d '{"email": "Jay3", "password": "Miles"}'
+```
+```
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Type: application/json; charset=utf-8
+Content-Length: 229
+ETag: W/"e5-PZnY9IaO9vzjHkC9C85VlpxDgBU"
+Set-Cookie: session=eyJqd3QiOiJleUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMWMyVnlTV1FpT2lJMk4yRXdNall3WkRBNU9UQmlORE15TkRoaU56WTFNbUlpTENKbGJXRnBiQ0k2SWtwaGVUTWlMQ0pwWVhRaU9qRTNNemcxTkRnM05Ea3NJbVY0Y0NJNk1UY3pPRFU0TkRjME9YMC5XZTY2di1Rc3RucFp3YV9lMFJ6eEo1dlBlZWhlRklZaFR6eEtsTGFmeUNrIn0=; path=/; httponly
+Date: Mon, 03 Feb 2025 02:12:29 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"email":"Jay3","password":"ff59b3cb9901f1519bfac68356f0e9b3af15cf98956ddff8bf2e438c694b45053db755c6ca394ef3dcc1dd7aad83e7e72a5d94b8e0343ed204373b29cbebd1a2.8b65e3ae985b1705","article":[],"_id":"67a0260d0990b43248b7652b","__v":0}%      
+```
+
+#### api/article/new
+```
+curl -X POST http://localhost:8000/api/article/new \
+  -H "Content-Type: application/json" \
+  -H "Cookie: session=eyJqd3QiOiJleUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMWMyVnlTV1FpT2lJMk4yRXdNall3WkRBNU9UQmlORE15TkRoaU56WTFNbUlpTENKbGJXRnBiQ0k2SWtwaGVUTWlMQ0pwWVhRaU9qRTNNemcxTkRnM05Ea3NJbVY0Y0NJNk1UY3pPRFU0TkRjME9YMC5XZTY2di1Rc3RucFp3YV9lMFJ6eEo1dlBlZWhlRklZaFR6eEtsTGFmeUNrIn0=" \
+  -d '{"title": "New Disney", "content": "New High"}'
+```
+#### api/article/show
+```
+curl localhost:8000/api/article/show/67a026500990b43248b7652d
+```
+
+#### api/article/show with session key
+```
+curl -X GET http://localhost:8000/api/article/show/67a026500990b43248b7652d \
+  -H "Cookie: session=eyJqd3QiOiJleUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKMWMyVnlTV1FpT2lJMk4yRXdNall3WkRBNU9UQmlORE15TkRoaU56WTFNbUlpTENKbGJXRnBiQ0k2SWtwaGVUTWlMQ0pwWVhRaU9qRTNNemcxTkRnM05Ea3NJbVY0Y0NJNk1UY3pPRFU0TkRjME9YMC5XZTY2di1Rc3RucFp3YV9lMFJ6eEo1dlBlZWhlRklZaFR6eEtsTGFmeUNrIn0="
+```
 ## Test with Postman
 ### Create a post
 url with `POST` in method, `raw` `JSON` in body

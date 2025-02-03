@@ -6,6 +6,12 @@ export const requireAuth = (
   res: Response,
   next: NextFunction
 ) => {
+  // Bypass processing for public article show routes
+  console.log(req.path);
+  if (req.path.startsWith("/show")) {
+    return next();
+  }
+
   if (!req.currentUser) {
     return next(new NotAuthorizedError());
   }
