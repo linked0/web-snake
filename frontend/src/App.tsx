@@ -1,6 +1,7 @@
 // src/App.tsx
 import React, { useEffect, useState } from "react";
 import CourseList from "./components/CourseList";
+import CallContractButton from './components/CallContractButton';
 
 export interface Course {
   id: number;
@@ -37,6 +38,7 @@ const App: React.FC = () => {
       <header style={styles.header}>
         <h1 style={styles.title}>Back-end Developer Career Path</h1>
       </header>
+      <CallContractButton />
       {loading ? (
         <p style={styles.loading}>Loading courses...</p>
       ) : (
