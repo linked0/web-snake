@@ -1,7 +1,7 @@
 import { Router, Response, Request, NextFunction } from 'express'
 import Post from '../../models/post'
 import { User, UserDoc } from '../../models/user'
-import { BadRequestError } from '../../../common/'
+import { BadRequestError } from '../../../common'
 
 const router = Router()
 

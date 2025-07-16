@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express'
 import Post from '../../models/post'
-import { BadRequestError, uploadImages } from '../../../common/'
+import { BadRequestError, uploadImages } from '../../../common'
 import fs from 'fs';
 import path from 'path'
 
