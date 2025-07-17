@@ -1,16 +1,18 @@
 import { useState } from 'react'
-import './App.css'
+import './index.css'
 import CourseGoalList from './components/CourseGoalList'
 import Header from './components/Header'
 import goalsImg from './assets/goals.jpg'
 import NewGoal from './components/NewGoal'
 import ContractConnect from './components/ContractConnect'
 import { AllBasic } from 'rabbit-contract-js'
-import { JsonRpcProvider } from "ethers/providers";
-import { useEthers } from "@usedapp/core";
 import { ethers } from "ethers";
-const { ethereum } = window;
+import Input from './components/Input'
 
+interface EthereumWindow extends Window {
+  ethereum?: any;
+}
+const { ethereum } = window as EthereumWindow;
 export const ALL_BASIC_CONTRACT = import.meta.env.VITE_ALL_BASIC_CONTRACT
 
 export type CourseGoal = {
@@ -24,13 +26,16 @@ function App() {
   const [allBasicValue, setAllBasicValue] = useState<number>(0);
 
   if (!ethereum) {
-    console.log("Make sure you have Metamask installed!");
-    return;
-  } else {
-    console.log("Wallet exists! We're ready to go!")
+    return (
+      <main>
+        <p>Make sure you have MetaMask installed!</p>
+      </main>
+    );
   }
-  // const provider = new ethers.BrowserProvider(ethereum);
-  // console.log('Provider: ', provider)
+  console.log("Wallet exists! We're ready to go!");
+  const provider = new ethers.BrowserProvider(ethereum);
+  console.log('Provider: ', provider)
+  console.log('ALL_BASIC_CONTRACT: ', ALL_BASIC_CONTRACT)
 
   const localnet = "http://localhost:8545"; 
 
@@ -44,10 +49,11 @@ function App() {
   const allBasic = new AllBasic(jsonRpcProvider, ALL_BASIC_CONTRACT)
   console.log('AllBasic Contract: ', allBasic)
   let curAllBasicValue: number = 0;
-  allBasic.getValue().then((value) => {
-    curAllBasicValue = Number(value)
-    console.log('allBasicValue:', curAllBasicValue);
-  });
+  // TODO: Later we can use this to get the value from the contract
+  // allBasic.getValue().then((value) => {
+  //   curAllBasicValue = Number(value)
+  //   console.log('allBasicValue:', curAllBasicValue);
+  // });
 
   function handleAddGoal(goal: string, summary: string) {
     setGoals((prevGoals) => {
@@ -78,6 +84,9 @@ function App() {
     <Header image={{ src: goalsImg, alt: 'A list of goals' }}>
       <h1>Your Course Goals</h1>
     </Header>
+    <Input label="Your Name" id="name" type="text"/>
+    <Input label="Your Email" id="email" type="email"/>
+    <Input label="Your Age" id="age" type="number" min={0} max={120} step={1} />
     <NewGoal onAddGoal={handleAddGoal} />
     <CourseGoalList goals={goals} onDeleteGoal={handleDeleteGoal} />
     <ContractConnect value={allBasicValue} onGetValue={handleAllBasic}/>
